@@ -1,27 +1,35 @@
 "use client";
 
 //importar bibliotecas e funções
-import ProgressModal from "../(general)/components/modals/ProgressModal";
-import SettingsModal from "../(general)/components/modals/SettingsModal";
-import HowToPlayModal from "../(general)/components/modals/HowToPlayModal";
-import useProgressModal from "../(general)/components/hooks/useProgressModal";
-import useSettingsModal from "../(general)/components/hooks/useSettingsModal";
-import useHowToPlayModal from "../(general)/components/hooks/useHowToPlayModal";
+
 import { FaGear } from "react-icons/fa6";
 import { useState } from "react";
 import { FiDelete } from "react-icons/fi";
+import { useRouter } from "next/navigation";
 import { HiChevronUp } from "react-icons/hi";
 import { BsQuestionLg } from "react-icons/bs";
 import { MdLeaderboard, MdSubdirectoryArrowLeft } from "react-icons/md";
+import useHowToPlayModal from "@/app/(general)/components/hooks/useHowToPlayModal";
+import useProgressModal from "@/app/(general)/components/hooks/useProgressModal";
+import useSettingsModal from "@/app/(general)/components/hooks/useSettingsModal";
+import HowToPlayModal from "@/app/(general)/components/modals/HowToPlayModal";
+import ProgressModal from "@/app/(general)/components/modals/ProgressModal";
+import SettingsModal from "@/app/(general)/components/modals/SettingsModal";
 
 //função principal
 const Thorme = () => {
   //definir constantes
+  const router = useRouter();
   const { isOpenH2P, onOpenH2P, onCloseH2P } = useHowToPlayModal();
   const { isOpenProgress, onOpenProgress, onCloseProgress } =
     useProgressModal();
   const { isOpenSettings, onOpenSettings, onCloseSettings } =
     useSettingsModal();
+
+  const onClickThormeDuo = () => {
+    router.push("/ThormeDuo");
+    router.refresh();
+  };
 
   type charactersType = {
     firstCharacter: string;
@@ -476,6 +484,22 @@ const Thorme = () => {
     <main
       className={`bg-[#272b34] flex min-h-screen flex-col items-center justify-between select-none`}
     >
+      <div
+        className={`bg-[#212121] w-full h-16 text-white font-bold flex flex-row items-center justify-start gap-10 px-10`}
+      >
+        <button
+          className={`w-[6rem] h-[2rem] border-2`}
+          onClick={onClickThormeDuo}
+        >
+          <p>THORME</p>
+        </button>
+        <button className={`w-[8rem] h-[2rem] border-2`}>
+          <p>THORME DUO</p>
+        </button>
+        <button className={`w-[11rem] h-[2rem] border-2`}>
+          <p>THORME QUATTRO</p>
+        </button>
+      </div>
       <HowToPlayModal isOpen={isOpenH2P} onClose={onCloseH2P} />
       <ProgressModal isOpen={isOpenProgress} onClose={onCloseProgress} />
       <SettingsModal isOpen={isOpenSettings} onClose={onCloseSettings} />

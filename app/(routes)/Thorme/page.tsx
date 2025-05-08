@@ -1,4 +1,4 @@
-import Thorme from "./(routes)/Thorme/ThormePage";
+import Thorme from "./ThormePage";
 
 const Home = () => {
   return <Thorme />;

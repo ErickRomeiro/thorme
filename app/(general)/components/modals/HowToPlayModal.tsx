@@ -58,6 +58,7 @@ const HowToPlayModal: React.FC<HowToPlayModalProps> = ({ isOpen, onClose }) => {
               <p className={`text-4xl text-white`}>L</p>
             </div>
           </div>
+
           {/* Explicação do verde */}
           <p>
             <div className={`h-auto w-auto flex flex-row items-end`}>
@@ -99,6 +100,7 @@ const HowToPlayModal: React.FC<HowToPlayModalProps> = ({ isOpen, onClose }) => {
               <p className={`text-4xl text-white`}>A</p>
             </div>
           </div>
+
           {/* Explicação do amarelo */}
           <p>
             <div className={`h-auto w-auto flex flex-row items-end`}>
@@ -111,6 +113,7 @@ const HowToPlayModal: React.FC<HowToPlayModalProps> = ({ isOpen, onClose }) => {
               está presente na palavra mas em outra posição.
             </div>
           </p>
+
           {/* Exemplo do preto */}
           <div className={`flex flex-rol h-auto w-auto gap-[0.5rem] font-bold`}>
             <div
@@ -139,6 +142,7 @@ const HowToPlayModal: React.FC<HowToPlayModalProps> = ({ isOpen, onClose }) => {
               <p className={`text-4xl text-white`}>O</p>
             </div>
           </div>
+
           {/* Explicação do amarelo */}
           <p>
             <div className={`h-auto w-auto flex flex-row items-end`}>
@@ -151,6 +155,13 @@ const HowToPlayModal: React.FC<HowToPlayModalProps> = ({ isOpen, onClose }) => {
               não está presente na palavra.
             </div>
           </p>
+
+          {/* Outras regras */}
+          <p>
+            Os acentos são automaticamente preenchidos e não são considerados
+            dicas.
+          </p>
+          <p>Pode haver letras repetidas na palavra.</p>
         </div>
       </div>
     </main>
