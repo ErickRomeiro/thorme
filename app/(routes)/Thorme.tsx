@@ -1,17 +1,35 @@
-'use client'
+"use client";
 
-import { HiChevronUp, HiColorSwatch } from "react-icons/hi";
+//importar bibliotecas e funções
+import ProgressModal from "../(general)/components/modals/ProgressModal";
+import SettingsModal from "../(general)/components/modals/SettingsModal";
+import HowToPlayModal from "../(general)/components/modals/HowToPlayModal";
+import useProgressModal from "../(general)/components/hooks/useProgressModal";
+import useSettingsModal from "../(general)/components/hooks/useSettingsModal";
+import useHowToPlayModal from "../(general)/components/hooks/useHowToPlayModal";
 import { FaGear } from "react-icons/fa6";
-import { VscGraph } from "react-icons/vsc";
+import { useState } from "react";
 import { FiDelete } from "react-icons/fi";
-import { MdSubdirectoryArrowLeft } from "react-icons/md";
-import { useRef, useState } from "react";
+import { HiChevronUp } from "react-icons/hi";
+import { BsQuestionLg } from "react-icons/bs";
+import { MdLeaderboard, MdSubdirectoryArrowLeft } from "react-icons/md";
 
+//função principal
+const Thorme = () => {
+  //definir constantes
+  const { isOpenH2P, onOpenH2P, onCloseH2P } = useHowToPlayModal();
+  const { isOpenProgress, onOpenProgress, onCloseProgress } =
+    useProgressModal();
+  const { isOpenSettings, onOpenSettings, onCloseSettings } =
+    useSettingsModal();
 
-const ThormeClient = () => {
-
-  // definir constantes
-  type charactersType = { firstCharacter: string, secondCharacter: string, thirdCharacter: string, fourthCharacter: string, fifthCharacter: string }[]
+  type charactersType = {
+    firstCharacter: string;
+    secondCharacter: string;
+    thirdCharacter: string;
+    fourthCharacter: string;
+    fifthCharacter: string;
+  }[];
   type StageData = {
     firstCharacter: string;
     secondCharacter: string;
@@ -20,74 +38,128 @@ const ThormeClient = () => {
     fifthCharacter: string;
   };
   const charactersStorage = [
-    { firstCharacter: '', secondCharacter: '', thirdCharacter: '', fourthCharacter: '', fifthCharacter: '' },
-    { firstCharacter: '', secondCharacter: '', thirdCharacter: '', fourthCharacter: '', fifthCharacter: '' },
-    { firstCharacter: '', secondCharacter: '', thirdCharacter: '', fourthCharacter: '', fifthCharacter: '' },
-    { firstCharacter: '', secondCharacter: '', thirdCharacter: '', fourthCharacter: '', fifthCharacter: '' },
-    { firstCharacter: '', secondCharacter: '', thirdCharacter: '', fourthCharacter: '', fifthCharacter: '' },
-    { firstCharacter: '', secondCharacter: '', thirdCharacter: '', fourthCharacter: '', fifthCharacter: '' }
-  ]
-  const [characters, setCharacters] = useState<charactersType>(charactersStorage);
-  const [word, setWord] = useState('AREIA');
-  const [selectedCharacter, setSelectedCharacter] = useState({ row: 1, column: 1 });
+    {
+      firstCharacter: "",
+      secondCharacter: "",
+      thirdCharacter: "",
+      fourthCharacter: "",
+      fifthCharacter: "",
+    },
+    {
+      firstCharacter: "",
+      secondCharacter: "",
+      thirdCharacter: "",
+      fourthCharacter: "",
+      fifthCharacter: "",
+    },
+    {
+      firstCharacter: "",
+      secondCharacter: "",
+      thirdCharacter: "",
+      fourthCharacter: "",
+      fifthCharacter: "",
+    },
+    {
+      firstCharacter: "",
+      secondCharacter: "",
+      thirdCharacter: "",
+      fourthCharacter: "",
+      fifthCharacter: "",
+    },
+    {
+      firstCharacter: "",
+      secondCharacter: "",
+      thirdCharacter: "",
+      fourthCharacter: "",
+      fifthCharacter: "",
+    },
+    {
+      firstCharacter: "",
+      secondCharacter: "",
+      thirdCharacter: "",
+      fourthCharacter: "",
+      fifthCharacter: "",
+    },
+  ];
+  const [characters, setCharacters] =
+    useState<charactersType>(charactersStorage);
+  const [word, setWord] = useState("AREIA");
+  const [selectedCharacter, setSelectedCharacter] = useState({
+    row: 1,
+    column: 1,
+  });
   const stages = [1, 2, 3, 4, 5, 6];
   const [stage, setStage] = useState(1);
   const [focusedInput, setFocusedInput] = useState(null);
   const verifyCharacter: string[] = [];
-  type userTryType = { firstTry: { try: string, isCorrect: string }[], secondTry: { try: string, isCorrect: string }[], thirdTry: { try: string, isCorrect: string }[], fourthTry: { try: string, isCorrect: string }[], fifthTry: { try: string, isCorrect: string }[], sixthTry: { try: string, isCorrect: string }[] }
-  const userTryStorage = { firstTry: [], secondTry: [], thirdTry: [], fourthTry: [], fifthTry: [], sixthTry: [] }
-  const [userTry, setUserTry] = useState<userTryType>(userTryStorage)
+  type userTryType = {
+    firstTry: { try: string; isCorrect: string }[];
+    secondTry: { try: string; isCorrect: string }[];
+    thirdTry: { try: string; isCorrect: string }[];
+    fourthTry: { try: string; isCorrect: string }[];
+    fifthTry: { try: string; isCorrect: string }[];
+    sixthTry: { try: string; isCorrect: string }[];
+  };
+  const userTryStorage = {
+    firstTry: [],
+    secondTry: [],
+    thirdTry: [],
+    fourthTry: [],
+    fifthTry: [],
+    sixthTry: [],
+  };
+  const [userTry, setUserTry] = useState<userTryType>(userTryStorage);
   const stageData: StageData = {
-    firstCharacter: 'a',
-    secondCharacter: 'b',
-    thirdCharacter: 'c',
-    fourthCharacter: 'd',
-    fifthCharacter: 'e',
+    firstCharacter: "a",
+    secondCharacter: "b",
+    thirdCharacter: "c",
+    fourthCharacter: "d",
+    fifthCharacter: "e",
   };
   const letterColors: Record<string, string> = {
-    a: 'green',
-    b: 'yellow',
-    c: 'black'
+    a: "green",
+    b: "yellow",
+    c: "black",
   };
 
   const checkWord = (enteredWord: string, targetWord: string) => {
     const result: string[] = [];
-
 
     for (let i = 0; i < targetWord.length; i++) {
       const targetChar = targetWord[i];
       const enteredChar = enteredWord[i];
 
       if (enteredChar === targetChar) {
-        result.push('green'); // Posição correta
+        result.push("green"); // Posição correta
       } else if (targetWord.includes(enteredChar)) {
-        result.push('yellow'); // Posição incorreta
+        result.push("yellow"); // Posição incorreta
       } else {
-        result.push('black'); // Não há na palavra
+        result.push("black"); // Não há na palavra
       }
     }
 
     return result;
   };
 
-  const [squareColors, setSquareColors] = useState<string[]>(Array(5).fill('')); // Inicialize com um array vazio para cada quadrado
+  const [squareColors, setSquareColors] = useState<string[]>(Array(5).fill("")); // Inicialize com um array vazio para cada quadrado
 
-  const onKeyDownInput = (event: React.KeyboardEvent<HTMLElement>,
+  const onKeyDownInput = (
+    event: React.KeyboardEvent<HTMLElement>,
     id: string,
     data: number
   ) => {
     event.preventDefault();
 
-    if (id === 'firstColumn') {
-      if (event.code === 'Tab' || event.code === 'ArrowRight') {
+    if (id === "firstColumn") {
+      if (event.code === "Tab" || event.code === "ArrowRight") {
         const nextCharacter = document.getElementById(`secondColumn-${data}`);
         if (nextCharacter) nextCharacter.focus();
         setSelectedCharacter({ row: data, column: 2 });
         return;
       }
-      if (event.code === 'Delete' || event.code === 'Backspace') {
+      if (event.code === "Delete" || event.code === "Backspace") {
         const updatedCharacters = characters.map((character, index) => {
-          if (index === (data - 1)) return { ...character, firstCharacter: '' };
+          if (index === data - 1) return { ...character, firstCharacter: "" };
           return character;
         });
         setCharacters(updatedCharacters);
@@ -96,7 +168,8 @@ const ThormeClient = () => {
       }
       if (/^[a-zA-Z]$/.test(event.key)) {
         const updatedCharacters = characters.map((character, index) => {
-          if (index === (data - 1)) return { ...character, firstCharacter: event.key.toUpperCase() };
+          if (index === data - 1)
+            return { ...character, firstCharacter: event.key.toUpperCase() };
           return character;
         });
         setCharacters(updatedCharacters);
@@ -107,16 +180,16 @@ const ThormeClient = () => {
       }
     }
 
-    if (id === 'secondColumn') {
-      if (event.code === 'Tab' || event.code === 'ArrowRight') {
+    if (id === "secondColumn") {
+      if (event.code === "Tab" || event.code === "ArrowRight") {
         const nextCharacter = document.getElementById(`thirdColumn-${data}`);
         if (nextCharacter) nextCharacter.focus();
         setSelectedCharacter({ row: data, column: 3 });
         return;
       }
-      if (event.code === 'Delete' || event.code === 'Backspace') {
+      if (event.code === "Delete" || event.code === "Backspace") {
         const updatedCharacters = characters.map((character, index) => {
-          if (index === (data - 1)) return { ...character, secondCharacter: '' };
+          if (index === data - 1) return { ...character, secondCharacter: "" };
           return character;
         });
         setCharacters(updatedCharacters);
@@ -125,7 +198,7 @@ const ThormeClient = () => {
         setSelectedCharacter({ row: data, column: 1 });
         return;
       }
-      if (event.code === 'ArrowLeft') {
+      if (event.code === "ArrowLeft") {
         const lastCharacter = document.getElementById(`firstColumn-${data}`);
         if (lastCharacter) lastCharacter.focus();
         setSelectedCharacter({ row: data, column: 1 });
@@ -133,7 +206,8 @@ const ThormeClient = () => {
       }
       if (/^[a-zA-Z]$/.test(event.key)) {
         const updatedCharacters = characters.map((character, index) => {
-          if (index === (data - 1)) return { ...character, secondCharacter: event.key.toUpperCase() };
+          if (index === data - 1)
+            return { ...character, secondCharacter: event.key.toUpperCase() };
           return character;
         });
         setCharacters(updatedCharacters);
@@ -144,16 +218,16 @@ const ThormeClient = () => {
       }
     }
 
-    if (id === 'thirdColumn') {
-      if (event.code === 'Tab' || event.code === 'ArrowRight') {
+    if (id === "thirdColumn") {
+      if (event.code === "Tab" || event.code === "ArrowRight") {
         const nextCharacter = document.getElementById(`fourthColumn-${data}`);
         if (nextCharacter) nextCharacter.focus();
         setSelectedCharacter({ row: data, column: 4 });
         return;
       }
-      if (event.code === 'Delete' || event.code === 'Backspace') {
+      if (event.code === "Delete" || event.code === "Backspace") {
         const updatedCharacters = characters.map((character, index) => {
-          if (index === (data - 1)) return { ...character, thirdCharacter: '' };
+          if (index === data - 1) return { ...character, thirdCharacter: "" };
           return character;
         });
         setCharacters(updatedCharacters);
@@ -162,7 +236,7 @@ const ThormeClient = () => {
         setSelectedCharacter({ row: data, column: 2 });
         return;
       }
-      if (event.code === 'ArrowLeft') {
+      if (event.code === "ArrowLeft") {
         const lastCharacter = document.getElementById(`secondColumn-${data}`);
         if (lastCharacter) lastCharacter.focus();
         setSelectedCharacter({ row: data, column: 2 });
@@ -170,7 +244,8 @@ const ThormeClient = () => {
       }
       if (/^[a-zA-Z]$/.test(event.key)) {
         const updatedCharacters = characters.map((character, index) => {
-          if (index === (data - 1)) return { ...character, thirdCharacter: event.key.toUpperCase() };
+          if (index === data - 1)
+            return { ...character, thirdCharacter: event.key.toUpperCase() };
           return character;
         });
         setCharacters(updatedCharacters);
@@ -181,16 +256,16 @@ const ThormeClient = () => {
       }
     }
 
-    if (id === 'fourthColumn') {
-      if (event.code === 'Tab' || event.code === 'ArrowRight') {
+    if (id === "fourthColumn") {
+      if (event.code === "Tab" || event.code === "ArrowRight") {
         const nextCharacter = document.getElementById(`fifthColumn-${data}`);
         if (nextCharacter) nextCharacter.focus();
         setSelectedCharacter({ row: data, column: 5 });
         return;
       }
-      if (event.code === 'Delete' || event.code === 'Backspace') {
+      if (event.code === "Delete" || event.code === "Backspace") {
         const updatedCharacters = characters.map((character, index) => {
-          if (index === (data - 1)) return { ...character, fourthCharacter: '' };
+          if (index === data - 1) return { ...character, fourthCharacter: "" };
           return character;
         });
         setCharacters(updatedCharacters);
@@ -199,7 +274,7 @@ const ThormeClient = () => {
         setSelectedCharacter({ row: data, column: 3 });
         return;
       }
-      if (event.code === 'ArrowLeft') {
+      if (event.code === "ArrowLeft") {
         const lastCharacter = document.getElementById(`thirdColumn-${data}`);
         if (lastCharacter) lastCharacter.focus();
         setSelectedCharacter({ row: data, column: 3 });
@@ -207,7 +282,8 @@ const ThormeClient = () => {
       }
       if (/^[a-zA-Z]$/.test(event.key)) {
         const updatedCharacters = characters.map((character, index) => {
-          if (index === (data - 1)) return { ...character, fourthCharacter: event.key.toUpperCase() };
+          if (index === data - 1)
+            return { ...character, fourthCharacter: event.key.toUpperCase() };
           return character;
         });
         setCharacters(updatedCharacters);
@@ -218,10 +294,10 @@ const ThormeClient = () => {
       }
     }
 
-    if (id === 'fifthColumn') {
-      if (event.code === 'Delete' || event.code === 'Backspace') {
+    if (id === "fifthColumn") {
+      if (event.code === "Delete" || event.code === "Backspace") {
         const updatedCharacters = characters.map((character, index) => {
-          if (index === (data - 1)) return { ...character, fifthCharacter: '' };
+          if (index === data - 1) return { ...character, fifthCharacter: "" };
           return character;
         });
         setCharacters(updatedCharacters);
@@ -230,7 +306,7 @@ const ThormeClient = () => {
         setSelectedCharacter({ row: data, column: 4 });
         return;
       }
-      if (event.code === 'ArrowLeft') {
+      if (event.code === "ArrowLeft") {
         const lastCharacter = document.getElementById(`fourthColumn-${data}`);
         if (lastCharacter) lastCharacter.focus();
         setSelectedCharacter({ row: data, column: 4 });
@@ -238,7 +314,8 @@ const ThormeClient = () => {
       }
       if (/^[a-zA-Z]$/.test(event.key)) {
         const updatedCharacters = characters.map((character, index) => {
-          if (index === (data - 1)) return { ...character, fifthCharacter: event.key.toUpperCase() };
+          if (index === data - 1)
+            return { ...character, fifthCharacter: event.key.toUpperCase() };
           return character;
         });
         setCharacters(updatedCharacters);
@@ -247,10 +324,16 @@ const ThormeClient = () => {
       }
     }
 
-    if (event.key === 'Enter') {
-      const receivedWord = `${characters[data - 1].firstCharacter}${characters[data - 1].secondCharacter}${characters[data - 1].thirdCharacter}${characters[data - 1].fourthCharacter}${characters[data - 1].fifthCharacter}`
+    if (event.key === "Enter") {
+      const receivedWord = `${characters[data - 1].firstCharacter}${characters[data - 1].secondCharacter}${characters[data - 1].thirdCharacter}${characters[data - 1].fourthCharacter}${characters[data - 1].fifthCharacter}`;
       const receivedCharacters = { ...characters[data - 1] };
-      if (!receivedCharacters.firstCharacter || !receivedCharacters.secondCharacter || !receivedCharacters.thirdCharacter || !receivedCharacters.fourthCharacter || !receivedCharacters.fifthCharacter) {
+      if (
+        !receivedCharacters.firstCharacter ||
+        !receivedCharacters.secondCharacter ||
+        !receivedCharacters.thirdCharacter ||
+        !receivedCharacters.fourthCharacter ||
+        !receivedCharacters.fifthCharacter
+      ) {
         return;
       }
 
@@ -258,17 +341,19 @@ const ThormeClient = () => {
         return;
       }
 
-      const resultColors = checkWord(receivedWord.toUpperCase(), word.toUpperCase());
+      const resultColors = checkWord(
+        receivedWord.toUpperCase(),
+        word.toUpperCase()
+      );
 
       setSquareColors(resultColors);
 
       if (receivedWord.toUpperCase() === word.toUpperCase()) {
-        console.log('Deu certo');
+        console.log("Deu certo");
         // código para mostrar que acertou a palavra.
       } else {
-        console.log('Palavra Incorreta');
+        console.log("Palavra Incorreta");
         console.log(resultColors);
-
 
         // código para verificar os caracteres.
 
@@ -276,63 +361,78 @@ const ThormeClient = () => {
           for (let b = 0; b < word.length; b++) {
             if (receivedWord[a] === word[b]) {
               if (!verifyCharacter.includes(receivedWord[a])) {
-                verifyCharacter.push(receivedWord[a])
+                verifyCharacter.push(receivedWord[a]);
               }
             }
           }
         }
         for (let a = 0; a < receivedWord.length; a++) {
           if (verifyCharacter.includes(receivedWord[a])) {
-            console.log(`pintei de amarelo ou verde a letra ${receivedWord[a]}`)
+            console.log(
+              `pintei de amarelo ou verde a letra ${receivedWord[a]}`
+            );
           } else {
-            console.log(`pintei de preto a letra ${receivedWord[a]}`)
+            console.log(`pintei de preto a letra ${receivedWord[a]}`);
           }
         }
         console.log(verifyCharacter);
       }
 
       if (stage === 1) {
-
         for (let b = 0; b < receivedWord.length; b++) {
-
-          let firstCharacter = {}
+          let firstCharacter = {};
           if (b === 0) {
             firstCharacter = {
               try: receivedCharacters.firstCharacter,
-              isCorrect: word[b].toUpperCase() === receivedWord[b].toUpperCase() ? 'green' : `${verifyCharacter.includes(receivedWord[b].toUpperCase()) ? 'yellow' : 'black'}`
-            }
+              isCorrect:
+                word[b].toUpperCase() === receivedWord[b].toUpperCase()
+                  ? "green"
+                  : `${verifyCharacter.includes(receivedWord[b].toUpperCase()) ? "yellow" : "black"}`,
+            };
           }
 
-          let secondCharacter = {}
+          let secondCharacter = {};
           if (b === 1) {
             secondCharacter = {
               try: receivedCharacters.secondCharacter,
-              isCorrect: word[b].toUpperCase() === receivedWord[b].toUpperCase() ? 'green' : `${verifyCharacter.includes(receivedWord[b].toUpperCase()) ? 'yellow' : 'black'}`
-            }
+              isCorrect:
+                word[b].toUpperCase() === receivedWord[b].toUpperCase()
+                  ? "green"
+                  : `${verifyCharacter.includes(receivedWord[b].toUpperCase()) ? "yellow" : "black"}`,
+            };
           }
 
-          let thirdCharacter = {}
+          let thirdCharacter = {};
           if (b === 2) {
             thirdCharacter = {
               try: receivedCharacters.thirdCharacter,
-              isCorrect: word[b].toUpperCase() === receivedWord[b].toUpperCase() ? 'green' : `${verifyCharacter.includes(receivedWord[b].toUpperCase()) ? 'yellow' : 'black'}`
-            }
+              isCorrect:
+                word[b].toUpperCase() === receivedWord[b].toUpperCase()
+                  ? "green"
+                  : `${verifyCharacter.includes(receivedWord[b].toUpperCase()) ? "yellow" : "black"}`,
+            };
           }
 
-          let fourthCharacter = {}
+          let fourthCharacter = {};
           if (b === 3) {
             fourthCharacter = {
               try: receivedCharacters.fourthCharacter,
-              isCorrect: word[b].toUpperCase() === receivedWord[b].toUpperCase() ? 'green' : `${verifyCharacter.includes(receivedWord[b].toUpperCase()) ? 'yellow' : 'black'}`
-            }
+              isCorrect:
+                word[b].toUpperCase() === receivedWord[b].toUpperCase()
+                  ? "green"
+                  : `${verifyCharacter.includes(receivedWord[b].toUpperCase()) ? "yellow" : "black"}`,
+            };
           }
 
-          let fifthCharacter = {}
+          let fifthCharacter = {};
           if (b === 4) {
             fifthCharacter = {
               try: receivedCharacters.fifthCharacter,
-              isCorrect: word[b].toUpperCase() === receivedWord[b].toUpperCase() ? 'green' : `${verifyCharacter.includes(receivedWord[b].toUpperCase()) ? 'yellow' : 'black'}`
-            }
+              isCorrect:
+                word[b].toUpperCase() === receivedWord[b].toUpperCase()
+                  ? "green"
+                  : `${verifyCharacter.includes(receivedWord[b].toUpperCase()) ? "yellow" : "black"}`,
+            };
           }
         }
       }
@@ -343,12 +443,12 @@ const ThormeClient = () => {
     inputId: string,
     isEditable: boolean
   ) => {
-    const color = letterColors[character.toLowerCase()] || 'corPadrao';
+    const color = letterColors[character.toLowerCase()] || "corPadrao";
 
     return (
       <div
         key={inputId}
-        className={`flex items-center justify-center | w-20 h-20 | border-x-[4px] border-t-[4px] ${color} rounded-md ${isEditable ? '' : 'bg-gray-600/60'}`}
+        className={`flex items-center justify-center | w-20 h-20 | border-x-[4px] border-t-[4px] ${color} rounded-md ${isEditable ? "" : "bg-gray-600/60"}`}
       >
         <input
           type="text"
@@ -356,9 +456,16 @@ const ThormeClient = () => {
           className="w-16 h-20| text-5xl text-white text-center font-extrabold border-0 outline-none bg-transparent"
           maxLength={1}
           value={character}
-          onChange={() => { }}
-          onKeyDown={(event) => onKeyDownInput(event, inputId, parseInt(inputId.split('-')[1]))}
-          onFocus={() => setSelectedCharacter({ row: parseInt(inputId.split('-')[1]), column: parseInt(inputId.split('-')[1]) })}
+          onChange={() => {}}
+          onKeyDown={(event) =>
+            onKeyDownInput(event, inputId, parseInt(inputId.split("-")[1]))
+          }
+          onFocus={() =>
+            setSelectedCharacter({
+              row: parseInt(inputId.split("-")[1]),
+              column: parseInt(inputId.split("-")[1]),
+            })
+          }
           disabled={!isEditable}
         />
       </div>
@@ -366,26 +473,44 @@ const ThormeClient = () => {
   };
 
   return (
-    <main className="bg-[#215586] flex min-h-screen flex-col items-center justify-between">
-      <div className="py-3 px-3  flex flex-row items-center justify-between w-full">
-        <div className="flex flex-row gap-2">
-          <div className="w-8 h-8 flex items-center justify-center bg-[#13314d] border-white rounded-md">
-            <HiChevronUp className="text-white w-8 h-8" />
-          </div>
-          <div className="w-8 h-8 flex items-center justify-center bg-[#13314d] border-white rounded-md">
-            <span className="font-bold text-2xl text-white">?</span>
-          </div>
+    <main
+      className={`bg-[#272b34] flex min-h-screen flex-col items-center justify-between select-none`}
+    >
+      <HowToPlayModal isOpen={isOpenH2P} onClose={onCloseH2P} />
+      <ProgressModal isOpen={isOpenProgress} onClose={onCloseProgress} />
+      <SettingsModal isOpen={isOpenSettings} onClose={onCloseSettings} />
+      <div
+        className={`pt-3 px-[20rem] flex flex-row items-center justify-between w-full`}
+      >
+        <div className={`flex flex-row gap-2`}>
+          <button
+            className={`w-8 h-8 flex items-center justify-center thorme-button border-[#a1a1a1] rounded-md`}
+          >
+            <HiChevronUp className={`text-3xl text-[#a1a1a1]`} />
+          </button>
+          <button
+            className={`w-8 h-8 flex items-center justify-center thorme-button border-[#a1a1a1] rounded-md`}
+            onClick={onOpenH2P}
+          >
+            <BsQuestionLg className="text-[20px] text-[#a1a1a1]" />
+          </button>
         </div>
         <div>
-          <h1 className="font-extrabold text-4xl text-white">THORME!</h1>
+          <h1 className="thorme-title font- text-2xl text-white">THORME</h1>
         </div>
         <div className=" flex flex-row gap-2">
-          <div className=" h-8 w-8 flex items-center justify-center bg-[#13314d] border-white rounded-md">
-            <VscGraph className="text-white w-5 h-5 " />
-          </div>
-          <div className=" h-8 w-8 flex items-center justify-center bg-[#13314d] border-white rounded-md">
-            <FaGear className="text-white w-5 h-5" />
-          </div>
+          <button
+            className="w-8 h-8 flex items-center justify-center thorme-button border-[#a1a1a1] rounded-md"
+            onClick={onOpenProgress}
+          >
+            <MdLeaderboard className="text-xl text-[#a1a1a1]" />
+          </button>
+          <button
+            className="w-8 h-8 flex items-center justify-center thorme-button border-[#a1a1a1] rounded-md"
+            onClick={onOpenSettings}
+          >
+            <FaGear className="text-base text-[#a1a1a1]" />
+          </button>
         </div>
       </div>
       <div className="flex flex-col items-center justify-center gap-1">
@@ -393,73 +518,93 @@ const ThormeClient = () => {
           const stageData = characters[data - 1];
           return (
             <div key={index} className={`flex flex-row gap-[0.5rem] w-full `}>
-              <div className={`flex items-center justify-center | w-20 h-20 | border-x-[4px] border-t-[4px] ${(selectedCharacter.row === (data) && selectedCharacter.column === 1) ? 'border-b-[10px]' : 'border-b-[4px]'}  border-white rounded-md ${stage === data ? '' : 'bg-gray-600/60'}`}>
+              <div
+                className={`flex items-center justify-center | w-20 h-20 | border-x-[4px] border-t-[4px] ${selectedCharacter.row === data && selectedCharacter.column === 1 ? "border-b-[10px]" : "border-b-[4px]"}  border-white rounded-md ${stage === data ? "" : "bg-gray-600/60"}`}
+              >
                 <input
                   type="text"
                   id={`firstColumn-${data}`}
                   className="w-16 h-20| text-5xl text-white text-center font-extrabold border-0 outline-none bg-transparent"
                   maxLength={1}
                   value={characters[data - 1].firstCharacter}
-                  onChange={() => { }}
-                  onKeyDown={(event) => onKeyDownInput(event, 'firstColumn', data)}
+                  onChange={() => {}}
+                  onKeyDown={(event) =>
+                    onKeyDownInput(event, "firstColumn", data)
+                  }
                   onFocus={() => setSelectedCharacter({ row: data, column: 1 })}
                   disabled={stage === data ? false : true}
                 />
               </div>
-              <div className={`flex items-center justify-center | w-20 h-20 | border-x-[4px] border-t-[4px] ${(selectedCharacter.row === (data) && selectedCharacter.column === 2) ? 'border-b-[10px]' : 'border-b-[4px]'}  border-white rounded-md  ${stage === data ? '' : 'bg-gray-600/60'}`}>
+              <div
+                className={`flex items-center justify-center | w-20 h-20 | border-x-[4px] border-t-[4px] ${selectedCharacter.row === data && selectedCharacter.column === 2 ? "border-b-[10px]" : "border-b-[4px]"}  border-white rounded-md  ${stage === data ? "" : "bg-gray-600/60"}`}
+              >
                 <input
                   type="text"
                   id={`secondColumn-${data}`}
                   className="w-16 h-20| text-5xl text-white text-center font-extrabold border-0 outline-none bg-transparent"
                   maxLength={1}
                   value={characters[data - 1].secondCharacter}
-                  onChange={() => { }}
-                  onKeyDown={(event) => onKeyDownInput(event, 'secondColumn', data)}
+                  onChange={() => {}}
+                  onKeyDown={(event) =>
+                    onKeyDownInput(event, "secondColumn", data)
+                  }
                   onFocus={() => setSelectedCharacter({ row: data, column: 2 })}
                   disabled={stage === data ? false : true}
                 />
               </div>
-              <div className={`flex items-center justify-center | w-20 h-20 | border-x-[4px] border-t-[4px] ${(selectedCharacter.row === (data) && selectedCharacter.column === 3) ? 'border-b-[10px]' : 'border-b-[4px]'}  border-white rounded-md  ${stage === data ? '' : 'bg-gray-600/60'}`}>
+              <div
+                className={`flex items-center justify-center | w-20 h-20 | border-x-[4px] border-t-[4px] ${selectedCharacter.row === data && selectedCharacter.column === 3 ? "border-b-[10px]" : "border-b-[4px]"}  border-white rounded-md  ${stage === data ? "" : "bg-gray-600/60"}`}
+              >
                 <input
                   type="text"
                   id={`thirdColumn-${data}`}
                   className="w-16 h-20| text-5xl text-white text-center font-extrabold border-0 outline-none bg-transparent"
                   maxLength={1}
                   value={characters[data - 1].thirdCharacter}
-                  onChange={() => { }}
-                  onKeyDown={(event) => onKeyDownInput(event, 'thirdColumn', data)}
+                  onChange={() => {}}
+                  onKeyDown={(event) =>
+                    onKeyDownInput(event, "thirdColumn", data)
+                  }
                   onFocus={() => setSelectedCharacter({ row: data, column: 3 })}
                   disabled={stage === data ? false : true}
                 />
               </div>
-              <div className={`flex items-center justify-center | w-20 h-20 | border-x-[4px] border-t-[4px] ${(selectedCharacter.row === (data) && selectedCharacter.column === 4) ? 'border-b-[10px]' : 'border-b-[4px]'}  border-white rounded-md  ${stage === data ? '' : 'bg-gray-600/60'}`}>
+              <div
+                className={`flex items-center justify-center | w-20 h-20 | border-x-[4px] border-t-[4px] ${selectedCharacter.row === data && selectedCharacter.column === 4 ? "border-b-[10px]" : "border-b-[4px]"}  border-white rounded-md  ${stage === data ? "" : "bg-gray-600/60"}`}
+              >
                 <input
                   type="text"
                   id={`fourthColumn-${data}`}
                   className="w-16 h-20| text-5xl text-white text-center font-extrabold border-0 outline-none  bg-transparent"
                   maxLength={1}
                   value={characters[data - 1].fourthCharacter}
-                  onChange={() => { }}
-                  onKeyDown={(event) => onKeyDownInput(event, 'fourthColumn', data)}
+                  onChange={() => {}}
+                  onKeyDown={(event) =>
+                    onKeyDownInput(event, "fourthColumn", data)
+                  }
                   onFocus={() => setSelectedCharacter({ row: data, column: 4 })}
                   disabled={stage === data ? false : true}
                 />
               </div>
-              <div className={`flex items-center justify-center | w-20 h-20 | border-x-[4px] border-t-[4px] ${(selectedCharacter.row === (data) && selectedCharacter.column === 5) ? 'border-b-[10px]' : 'border-b-[4px]'}  border-white rounded-md  ${stage === data ? '' : 'bg-gray-600/60'}`}>
+              <div
+                className={`flex items-center justify-center | w-20 h-20 | border-x-[4px] border-t-[4px] ${selectedCharacter.row === data && selectedCharacter.column === 5 ? "border-b-[10px]" : "border-b-[4px]"}  border-white rounded-md  ${stage === data ? "" : "bg-gray-600/60"}`}
+              >
                 <input
                   type="text"
                   id={`fifthColumn-${data}`}
                   className="w-16 h-20 | text-5xl text-white text-center font-extrabold border-0 outline-none bg-transparent"
                   maxLength={1}
                   value={characters[data - 1].fifthCharacter}
-                  onChange={() => { }}
-                  onKeyDown={(event) => onKeyDownInput(event, 'fifthColumn', data)}
+                  onChange={() => {}}
+                  onKeyDown={(event) =>
+                    onKeyDownInput(event, "fifthColumn", data)
+                  }
                   onFocus={() => setSelectedCharacter({ row: data, column: 5 })}
                   disabled={stage === data ? false : true}
                 />
               </div>
             </div>
-          )
+          );
         })}
       </div>
       <div className="py-3 px-3  flex flex-col gap-2 ">
@@ -554,8 +699,8 @@ const ThormeClient = () => {
           </div>
         </div>
       </div>
-    </main >
+    </main>
   );
-}
+};
 
-export default ThormeClient;
+export default Thorme;
