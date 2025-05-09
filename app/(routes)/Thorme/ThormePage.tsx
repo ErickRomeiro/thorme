@@ -1,23 +1,28 @@
 "use client";
 
 //importar bibliotecas e funções
-
+import ProgressModal from "@/app/(general)/components/modals/ProgressModal";
+import SettingsModal from "@/app/(general)/components/modals/SettingsModal";
+import HowToPlayModal from "@/app/(general)/components/modals/HowToPlayModal";
+import useProgressModal from "@/app/(general)/components/hooks/useProgressModal";
+import useSettingsModal from "@/app/(general)/components/hooks/useSettingsModal";
+import useHowToPlayModal from "@/app/(general)/components/hooks/useHowToPlayModal";
+import { cn } from "@/app/(general)/libs/utils";
 import { FaGear } from "react-icons/fa6";
-import { useState } from "react";
 import { FiDelete } from "react-icons/fi";
 import { useRouter } from "next/navigation";
 import { HiChevronUp } from "react-icons/hi";
 import { BsQuestionLg } from "react-icons/bs";
+import { useState, useEffect } from "react";
 import { MdLeaderboard, MdSubdirectoryArrowLeft } from "react-icons/md";
-import useHowToPlayModal from "@/app/(general)/components/hooks/useHowToPlayModal";
-import useProgressModal from "@/app/(general)/components/hooks/useProgressModal";
-import useSettingsModal from "@/app/(general)/components/hooks/useSettingsModal";
-import HowToPlayModal from "@/app/(general)/components/modals/HowToPlayModal";
-import ProgressModal from "@/app/(general)/components/modals/ProgressModal";
-import SettingsModal from "@/app/(general)/components/modals/SettingsModal";
+
+//definir a tipagem da função
+interface ThormeProps {
+  palavra: string;
+}
 
 //função principal
-const Thorme = () => {
+const Thorme: React.FC<ThormeProps> = ({ palavra }) => {
   //definir constantes
   const router = useRouter();
   const { isOpenH2P, onOpenH2P, onCloseH2P } = useHowToPlayModal();
@@ -25,10 +30,36 @@ const Thorme = () => {
     useProgressModal();
   const { isOpenSettings, onOpenSettings, onCloseSettings } =
     useSettingsModal();
+  const [modes, setModes] = useState(false);
 
+  useEffect(() => {
+    const firstInput = document.getElementById("firstColumn-1");
+    if (firstInput) {
+      firstInput.focus();
+    }
+  }, []);
+
+  //direcionar ao Thorme
+  const onClickThorme = () => {
+    router.push("/Thorme");
+    router.refresh();
+  };
+
+  //direcionar ao ThormeDuo
   const onClickThormeDuo = () => {
     router.push("/ThormeDuo");
     router.refresh();
+  };
+
+  //direcionar ao ThormeQuattro
+  const onClickThormeQuattro = () => {
+    router.push("/ThormeQuattro");
+    router.refresh();
+  };
+
+  //função para alternar entre os modos
+  const onClickModes = () => {
+    setModes(!modes);
   };
 
   type charactersType = {
@@ -461,7 +492,7 @@ const Thorme = () => {
         <input
           type="text"
           id={inputId}
-          className="w-16 h-20| text-5xl text-white text-center font-extrabold border-0 outline-none bg-transparent"
+          className="w-16 h-20| text-5xl text-white text-center font-extrabold border-0 outline-none bg-transparent caret-transparent"
           maxLength={1}
           value={character}
           onChange={() => {}}
@@ -480,38 +511,63 @@ const Thorme = () => {
     );
   };
 
+  //renderização principal
   return (
     <main
       className={`bg-[#272b34] flex min-h-screen flex-col items-center justify-between select-none`}
     >
+      {/* renderização dos modos */}
       <div
-        className={`bg-[#212121] w-full h-16 text-white font-bold flex flex-row items-center justify-start gap-10 px-10`}
+        className={cn(
+          `bg-[#212121] w-full text-white font-bold flex flex-row items-center justify-start gap-10 px-10 transform duration-500`,
+          modes ? `h-16 translate-y-0` : `h-16 -translate-y-16`
+        )}
       >
+        <button
+          className={`w-[6rem] h-[2rem] border-2`}
+          onClick={onClickThorme}
+        >
+          <p>THORME</p>
+        </button>
         <button
           className={`w-[6rem] h-[2rem] border-2`}
           onClick={onClickThormeDuo}
         >
-          <p>THORME</p>
+          <p>DUO</p>
         </button>
-        <button className={`w-[8rem] h-[2rem] border-2`}>
-          <p>THORME DUO</p>
-        </button>
-        <button className={`w-[11rem] h-[2rem] border-2`}>
-          <p>THORME QUATTRO</p>
+        <button
+          className={`w-[6rem] h-[2rem] border-2`}
+          onClick={onClickThormeQuattro}
+        >
+          <p>QUATTRO</p>
         </button>
       </div>
       <HowToPlayModal isOpen={isOpenH2P} onClose={onCloseH2P} />
       <ProgressModal isOpen={isOpenProgress} onClose={onCloseProgress} />
       <SettingsModal isOpen={isOpenSettings} onClose={onCloseSettings} />
       <div
-        className={`pt-3 px-[20rem] flex flex-row items-center justify-between w-full`}
+        className={cn(
+          `pt-3 px-[20rem] flex flex-row items-center justify-between w-full transform duration-500`,
+          modes ? `translate-y-0` : `-translate-y-16`
+        )}
       >
+        {/* botões do navbar */}
         <div className={`flex flex-row gap-2`}>
+          {/* botão de modos */}
           <button
             className={`w-8 h-8 flex items-center justify-center thorme-button border-[#a1a1a1] rounded-md`}
+            onClick={onClickModes}
           >
-            <HiChevronUp className={`text-3xl text-[#a1a1a1]`} />
+            <HiChevronUp
+              className={cn(
+                `text-3xl text-[#a1a1a1]`,
+                modes
+                  ? `rotate-180 transform duration-300`
+                  : `rotate-360 transform duration-300`
+              )}
+            />
           </button>
+          {/* botão de ajuda */}
           <button
             className={`w-8 h-8 flex items-center justify-center thorme-button border-[#a1a1a1] rounded-md`}
             onClick={onOpenH2P}
@@ -523,12 +579,14 @@ const Thorme = () => {
           <h1 className="thorme-title font- text-2xl text-white">THORME</h1>
         </div>
         <div className=" flex flex-row gap-2">
+          {/* botão de progresso */}
           <button
             className="w-8 h-8 flex items-center justify-center thorme-button border-[#a1a1a1] rounded-md"
             onClick={onOpenProgress}
           >
             <MdLeaderboard className="text-xl text-[#a1a1a1]" />
           </button>
+          {/* botão de configurações */}
           <button
             className="w-8 h-8 flex items-center justify-center thorme-button border-[#a1a1a1] rounded-md"
             onClick={onOpenSettings}
@@ -537,6 +595,8 @@ const Thorme = () => {
           </button>
         </div>
       </div>
+
+      {/* renderização dos quadrados */}
       <div className="flex flex-col items-center justify-center gap-1">
         {stages.map((data, index) => {
           const stageData = characters[data - 1];
@@ -548,7 +608,7 @@ const Thorme = () => {
                 <input
                   type="text"
                   id={`firstColumn-${data}`}
-                  className="w-16 h-20| text-5xl text-white text-center font-extrabold border-0 outline-none bg-transparent"
+                  className="w-16 h-20| text-5xl text-white text-center font-extrabold border-0 outline-none bg-transparent caret-transparent"
                   maxLength={1}
                   value={characters[data - 1].firstCharacter}
                   onChange={() => {}}
@@ -565,7 +625,7 @@ const Thorme = () => {
                 <input
                   type="text"
                   id={`secondColumn-${data}`}
-                  className="w-16 h-20| text-5xl text-white text-center font-extrabold border-0 outline-none bg-transparent"
+                  className="w-16 h-20| text-5xl text-white text-center font-extrabold border-0 outline-none bg-transparent caret-transparent"
                   maxLength={1}
                   value={characters[data - 1].secondCharacter}
                   onChange={() => {}}
@@ -582,7 +642,7 @@ const Thorme = () => {
                 <input
                   type="text"
                   id={`thirdColumn-${data}`}
-                  className="w-16 h-20| text-5xl text-white text-center font-extrabold border-0 outline-none bg-transparent"
+                  className="w-16 h-20| text-5xl text-white text-center font-extrabold border-0 outline-none bg-transparent caret-transparent"
                   maxLength={1}
                   value={characters[data - 1].thirdCharacter}
                   onChange={() => {}}
@@ -599,7 +659,7 @@ const Thorme = () => {
                 <input
                   type="text"
                   id={`fourthColumn-${data}`}
-                  className="w-16 h-20| text-5xl text-white text-center font-extrabold border-0 outline-none  bg-transparent"
+                  className="w-16 h-20| text-5xl text-white text-center font-extrabold border-0 outline-none bg-transparent caret-transparent"
                   maxLength={1}
                   value={characters[data - 1].fourthCharacter}
                   onChange={() => {}}
@@ -616,7 +676,7 @@ const Thorme = () => {
                 <input
                   type="text"
                   id={`fifthColumn-${data}`}
-                  className="w-16 h-20 | text-5xl text-white text-center font-extrabold border-0 outline-none bg-transparent"
+                  className="w-16 h-20| text-5xl text-white text-center font-extrabold border-0 outline-none bg-transparent caret-transparent"
                   maxLength={1}
                   value={characters[data - 1].fifthCharacter}
                   onChange={() => {}}

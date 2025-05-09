@@ -1,7 +1,8 @@
 import Thorme from "./ThormePage";
 
 const Home = () => {
-  return <Thorme />;
+  const palavra = "BUSCA";
+  return <Thorme palavra={palavra} />;
 };
 
 export default Home;
